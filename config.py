@@ -8,12 +8,14 @@ class Config:
     BORDER_WEIGHT = 2
     BORDER_COLOR = (0, 0, 0)
     CEIL_COLOR_BY_TYPE = {0: (255, 0, 0),
-                          1: (255, 127, 0),
+                          1: (255, 0, 0),
                           2: (255, 255, 0),
-                          3: (0, 255, 0),
+                          3: (255, 255, 0),
                           4: (0, 0, 255),
                           5: (75, 0, 130),
                           6: (148, 0, 211)}
+
+    SHIPS_SIZES = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
 
     assert (SCREEN_WIDTH - ((FIELD_WIDTH + 1) * BORDER_WEIGHT)) % FIELD_WIDTH == 0, "Width is not properly divisible"
     CEIL_WIDTH = (SCREEN_WIDTH - ((FIELD_WIDTH + 1) * BORDER_WEIGHT)) // FIELD_WIDTH

@@ -14,14 +14,13 @@ class App:
 
     def on_init(self):
         pygame.init()
-        print("")
         self._display_surf = pygame.display.set_mode(self.screen_size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         self._running = True
 
     def on_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
-            pos = pygame.mouse.get_pos()
-            field_cords = self.field.get_field_cords_by_screen_cords(pos)
+            mouse_pos = pygame.mouse.get_pos()
+            field_cords = self.field.get_field_cords_by_screen_cords(mouse_pos)
             self.field.shoot(field_cords)
         if event.type == pygame.QUIT:
             self._running = False
@@ -33,7 +32,8 @@ class App:
         self.field.render(self._display_surf)
         pygame.display.update()
 
-    def on_cleanup(self):
+    @staticmethod
+    def on_cleanup():
         pygame.quit()
 
     def on_execute(self):

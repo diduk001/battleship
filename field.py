@@ -1,6 +1,9 @@
+import random
+
 import pygame
 
 from config import Config
+from ship import Ship
 
 
 class Field:
@@ -15,13 +18,20 @@ class Field:
         self.ceil_colors = Config.CEIL_COLOR_BY_TYPE
 
         self._initialized = False
-        self.field_view = [[0 for j in range(self.width)] for i in range(self.height)]
-        self.field_ships = [[0 for j in range(self.width)] for i in range(self.height)]
+        self.field_view = [[0 for j in range(self.height)] for i in range(self.width)]
+        self.field_ships = [[0 for j in range(self.height)] for i in range(self.width)]
+        self.free_spots = []
+        for i in range(10):
+            for j in range(10):
+                self.free_spots.append((i, j))
+
+        self.ships_sizes = Config.SHIPS_SIZES
+
+        self.build()
 
     def render(self, screen: pygame.Surface) -> None:
-        # assert self._initialized
+        assert self._initialized
 
-        screen.fill((255, 255, 255))
         # draw grid from borders
         for col in range(self.width + 1):
             col_x = (self.border_weight + self.ceil_width) * col
@@ -45,7 +55,7 @@ class Field:
 
         for x in range(self.width):
             for y in range(self.height):
-                ceil_type = self.field_view[y][x]
+                ceil_type = self.field_view[x][y]
                 ceil_color = self.ceil_colors[ceil_type]
 
                 left = (x + 1) * self.border_weight + x * self.ceil_width
@@ -55,6 +65,71 @@ class Field:
                 rect = pygame.Rect(left, top, width, height)
 
                 pygame.draw.rect(screen, ceil_color, rect)
+
+    def check_up(self, size, x, y):
+        flag = True
+        for i in range(size):
+            if (0 <= (x - i) < 10) and self.field_view[x - i][y] == 0:
+                continue
+            else:
+                flag = False
+        if flag:
+            Ship(self, size, x, y, 1)
+        else:
+            self.place(size)
+
+    def check_down(self, size, x, y):
+        flag = True
+        for i in range(size):
+            if (0 <= (x + i) < 10) and self.field_view[x + i][y] == 0:
+                continue
+            else:
+                flag = False
+        if flag:
+            Ship(self, size, x, y, 2)
+        else:
+            self.place(size)
+
+    def check_left(self, size, x, y):
+        flag = True
+        for i in range(size):
+            if (0 <= (y - i) < 10) and self.field_view[x][y - i] == 0:
+                continue
+            else:
+                flag = False
+        if flag:
+            Ship(self, size, x, y, 3)
+        else:
+            self.place(size)
+
+    def check_right(self, size, x, y):
+        flag = True
+        for i in range(size):
+            if (0 <= (y + i) < 10) and self.field_view[x][y + i] == 0:
+                continue
+            else:
+                flag = False
+        if flag:
+            Ship(self, size, x, y, 4)
+        else:
+            self.place(size)
+
+    def place(self, size):
+        x, y = self.free_spots[random.randint(0, len(self.free_spots) - 1)]
+        d = random.randint(1, 4)
+        if d == 1:
+            self.check_up(size, x, y)
+        if d == 2:
+            self.check_down(size, x, y)
+        if d == 3:
+            self.check_left(size, x, y)
+        if d == 4:
+            self.check_right(size, x, y)
+
+    def build(self):
+        for size in self.ships_sizes:
+            self.place(size)
+        self._initialized = True
 
     def get_field_cords_by_screen_cords(self, screen_cords: tuple[int, int]) -> tuple[int, int]:
         screen_x, screen_y = screen_cords
@@ -70,7 +145,9 @@ class Field:
         return field_x, field_y
 
     def shoot(self, field_cords: tuple[int, int]) -> None:
-        # TODO: bebra
-        x_field, y_field = field_cords
-        print(field_cords)
-        self.field_view[y_field][x_field] = 1
+        x, y = field_cords
+        if self.field_ships[x][y] != 0:
+            (self.field_ships[x][y]).shot(x, y)
+            self.field_view[x][y] = 5
+        else:
+            self.field_view[x][y] = 4
