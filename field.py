@@ -101,7 +101,15 @@ class Field:
         for bomb, f in falling_bomb.is_falling:
             if f == self:
                 bomb.fall()
-                screen.blit(bomb.sprite, (bomb.x, bomb.y))
+                if bomb.size > Config.CEIL_HEIGHT + 5:
+                    screen.blit(bomb.sprite, (bomb.x, bomb.y))
+        for burst in falling_bomb.is_bursting:
+            if burst.field == self:
+                if burst.timer < 20:
+                    screen.blit(burst.frames[burst.timer], (burst.x, burst.y))
+                    burst.timer += 1
+                else:
+                    falling_bomb.is_bursting.remove(burst)
 
     def build(self) -> None:
         for size in self.ships_sizes:
