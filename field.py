@@ -57,7 +57,6 @@ class Field:
         x, y = field_cords
         if self.field_ships[x][y] is not Ship:
             (self.field_ships[x][y]).shot(x, y)
-            self.field_view[x][y] = 5
         else:
             self.field_view[x][y] = 4
 
