@@ -14,17 +14,17 @@ class Config:
     BORDER_WEIGHT = 2
     BORDER_COLOR = (0, 0, 0)
 
-    CEIL_SPRITES_FILENAMES = ["empty.png",
-                 "empty.png",
-                 "body_v.png",
-                 "body_h.png",
-                 "empty_with_bomb.png",
-                 "ship_shotted.png",
-                 "left_end.png",
-                 "right_end.png",
-                 "up_end.png",
-                 "down_end.png",
-                 "size_one.png"]
+    CEIL_SPRITES_FILENAMES = ["new_empty.png",
+                 "new_empty.png",
+                 "new_body_v.png",
+                 "new_body_h.png",
+                 "new_empty_with_bomb.png",
+                 "new_ship_shotten.png",
+                 "new_left_end.png",
+                 "new_right_end.png",
+                 "new_up_end.png",
+                 "new_down_end.png",
+                 "new_size_one.png"]
     """
     0 - empty               +
     1 - empty around ship   +
