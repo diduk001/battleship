@@ -17,6 +17,10 @@ class Field:
         self.border_color = Config.BORDER_COLOR
 
         self._initialized = False
+
+        self.visible = True
+        self.types_to_make_invisible = Config.TYPES_TO_MAKE_INVISIBLE
+
         self.field_view = [[0 for j in range(self.height)] for i in range(self.width)]
         self.field_ships = [[Ship for j in range(self.height)] for i in range(self.width)]
         self.free_spots = []
@@ -87,72 +91,88 @@ class Field:
         for x in range(self.width):
             for y in range(self.height):
                 ceil_type = self.field_view[x][y]
+                if not self.visible:
+                    if ceil_type in self.types_to_make_invisible:
+                        ceil_type = 0
+
                 ceil_sprite = self.ceil_sprites[ceil_type]
                 left = (x + 1) * self.border_weight + x * self.ceil_width
                 top = (y + 1) * self.border_weight + y * self.ceil_height
                 screen.blit(ceil_sprite, (left, top))
 
-    def build(self):
+    def build(self) -> None:
         for size in self.ships_sizes:
             self.place(size)
         self._initialized = True
 
-    def check_up(self, size, x, y):
+    def is_visible(self) -> bool:
+        return self.visible
+
+    def make_invisible(self) -> None:
+        self.visible = False
+
+    def make_visible(self) -> None:
+        self.visible = True
+
+    def change_visibility(self) -> None:
+        self.visible = not self.visible
+
+    def check_up(self, ship_size: int, x: int, y: int) -> None:
         flag = True
-        for i in range(size):
+        for i in range(ship_size):
             if (0 <= (x - i) < 10) and self.field_view[x - i][y] == 0:
                 continue
             else:
                 flag = False
         if flag:
-            Ship(self, size, x, y, 1)
+            Ship(self, ship_size, x, y, 1)
         else:
-            self.place(size)
+            self.place(ship_size)
 
-    def check_down(self, size, x, y):
+    def check_down(self, ship_size: int, x: int, y: int) -> None:
         flag = True
-        for i in range(size):
+        for i in range(ship_size):
             if (0 <= (x + i) < 10) and self.field_view[x + i][y] == 0:
                 continue
             else:
                 flag = False
         if flag:
-            Ship(self, size, x, y, 2)
+            Ship(self, ship_size, x, y, 2)
         else:
-            self.place(size)
+            self.place(ship_size)
 
-    def check_left(self, size, x, y):
+    def check_left(self, ship_size: int, x: int, y: int) -> None:
         flag = True
-        for i in range(size):
+        for i in range(ship_size):
             if (0 <= (y - i) < 10) and self.field_view[x][y - i] == 0:
                 continue
             else:
                 flag = False
         if flag:
-            Ship(self, size, x, y, 3)
+            Ship(self, ship_size, x, y, 3)
         else:
-            self.place(size)
+            self.place(ship_size)
 
-    def check_right(self, size, x, y):
+    def check_right(self, ship_size: int, x: int, y: int) -> None:
         flag = True
-        for i in range(size):
+        for i in range(ship_size):
             if (0 <= (y + i) < 10) and self.field_view[x][y + i] == 0:
                 continue
             else:
                 flag = False
         if flag:
-            Ship(self, size, x, y, 4)
+            Ship(self, ship_size, x, y, 4)
         else:
-            self.place(size)
+            self.place(ship_size)
 
-    def place(self, size):
+    def place(self, ship_size: int) -> None:
         x, y = self.free_spots[random.randint(0, len(self.free_spots) - 1)]
         d = random.randint(1, 4)
         if d == 1:
-            self.check_up(size, x, y)
+            self.check_up(ship_size, x, y)
         if d == 2:
-            self.check_down(size, x, y)
+            self.check_down(ship_size, x, y)
         if d == 3:
-            self.check_left(size, x, y)
+            self.check_left(ship_size, x, y)
         if d == 4:
-            self.check_right(size, x, y)
+            self.check_right(ship_size, x, y)

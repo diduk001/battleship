@@ -4,6 +4,7 @@ from config import Config
 from field import Field
 from ui import UI
 
+
 class App:
     def __init__(self):
         self._running = True
@@ -25,13 +26,12 @@ class App:
 
         self.ui.add((0, 0), self.field_size, self.field, self._field_surface)
         self.ui.add((602, 0), self.field_size, self.field2, self._field2_surface)
+        self.field2.make_invisible()
 
     def on_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
             self.ui.click(mouse_pos)
-            # field_cords = self.field.get_field_cords_by_screen_cords(mouse_pos)
-            # self.field.shoot(field_cords)
         if event.type == pygame.QUIT:
             self._running = False
 
@@ -47,7 +47,7 @@ class App:
         pygame.quit()
 
     def on_execute(self):
-        if self.on_init() == False:
+        if self.on_init() is False:
             self._running = False
 
         while self._running:

@@ -1,5 +1,3 @@
-import logging as log
-log.basicConfig(level=log.DEBUG)
 """
 0 - empty               +
 1 - empty around ship   +
@@ -11,11 +9,12 @@ log.basicConfig(level=log.DEBUG)
 7 - down end            +
 8 - left end            +-
 9 - right end           +-
-10 - ship size 1        +
+10 - ship ship size 1        +
 """
 
+
 class Ship:
-    def __init__(self, field, size, x, y, direction):
+    def __init__(self, field, size: int, x: int, y: int, direction: int):
         self.field = field
         self.x = x
         self.y = y
@@ -32,7 +31,7 @@ class Ship:
         if direction == 4:
             self.place_right(size, x, y)
 
-    def shot(self, x, y):
+    def shot(self, x: int, y: int) -> None:
         if self.status[(x, y)]:
             self.status[(x, y)] = 0
             self.hp -= 1
@@ -40,11 +39,11 @@ class Ship:
         if not self.hp:
             self.drowned()
 
-    def drowned(self):
+    def drowned(self) -> None:
         for x, y in self.ceils_around:
             self.field.field_view[x][y] = 4
 
-    def place_up(self, size, x, y):
+    def place_up(self, size: int, x: int, y: int) -> None:
         for i in range(-1, size + 1):
             for j in range(-1, 2):
                 p = (x - i, y + j)
@@ -64,7 +63,7 @@ class Ship:
         else:
             self.field.field_view[x][y] = 10
 
-    def place_down(self, size, x, y):
+    def place_down(self, size: int, x: int, y: int) -> None:
         for i in range(-1, size + 1):
             for j in range(-1, 2):
                 p = (x + i, y + j)
@@ -84,7 +83,7 @@ class Ship:
         else:
             self.field.field_view[x][y] = 10
 
-    def place_left(self, size, x, y):
+    def place_left(self, size: int, x: int, y: int) -> None:
         for i in range(-1, 2):
             for j in range(-1, size + 1):
                 p = (x + i, y - j)
@@ -104,7 +103,7 @@ class Ship:
         else:
             self.field.field_view[x][y] = 10
 
-    def place_right(self, size, x, y):
+    def place_right(self, size: int, x: int, y: int) -> None:
         for i in range(-1, 2):
             for j in range(-1, size + 1):
                 p = (x + i, y + j)
