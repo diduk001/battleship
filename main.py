@@ -3,7 +3,6 @@ import pygame
 from config import Config
 from field import Field
 
-
 class App:
     def __init__(self):
         self._running = True

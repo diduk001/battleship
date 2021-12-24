@@ -2,6 +2,8 @@ import random
 
 import pygame
 
+import os
+
 from config import Config
 from ship import Ship
 
@@ -15,8 +17,6 @@ class Field:
         self.border_weight = Config.BORDER_WEIGHT
         self.border_color = Config.BORDER_COLOR
 
-        self.ceil_colors = Config.CEIL_COLOR_BY_TYPE
-
         self._initialized = False
         self.field_view = [[0 for j in range(self.height)] for i in range(self.width)]
         self.field_ships = [[0 for j in range(self.height)] for i in range(self.width)]
@@ -26,6 +26,12 @@ class Field:
                 self.free_spots.append((i, j))
 
         self.ships_sizes = Config.SHIPS_SIZES
+
+        self.ceil_sprites = []
+        for filename in Config.CEIL_SPRITES_FILENAMES:
+            file_path = os.path.join('.', 'static', 'img', filename)
+            file = pygame.image.load(file_path)
+            self.ceil_sprites.append(file)
 
         self.build()
 
@@ -56,15 +62,11 @@ class Field:
         for x in range(self.width):
             for y in range(self.height):
                 ceil_type = self.field_view[x][y]
-                ceil_color = self.ceil_colors[ceil_type]
-
+                ceil_sprite = self.ceil_sprites[ceil_type]
                 left = (x + 1) * self.border_weight + x * self.ceil_width
                 top = (y + 1) * self.border_weight + y * self.ceil_height
-                width = self.ceil_width
-                height = self.ceil_height
-                rect = pygame.Rect(left, top, width, height)
+                screen.blit(ceil_sprite, (left, top))
 
-                pygame.draw.rect(screen, ceil_color, rect)
 
     def check_up(self, size, x, y):
         flag = True

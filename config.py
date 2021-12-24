@@ -1,3 +1,4 @@
+import  os.path
 class Config:
     SCREEN_WIDTH = 602
     SCREEN_HEIGHT = 602
@@ -10,13 +11,31 @@ class Config:
 
     BORDER_WEIGHT = 2
     BORDER_COLOR = (0, 0, 0)
-    CEIL_COLOR_BY_TYPE = {0: (255, 0, 0),
-                          1: (255, 0, 0),
-                          2: (255, 255, 0),
-                          3: (255, 255, 0),
-                          4: (0, 0, 255),
-                          5: (75, 0, 130),
-                          6: (148, 0, 211)}
+
+    CEIL_SPRITES_FILENAMES = ["empty.png",
+                 "empty.png",
+                 "body_v.png",
+                 "body_h.png",
+                 "empty_with_bomb.png",
+                 "ship_shotted.png",
+                 "left_end.png",
+                 "right_end.png",
+                 "up_end.png",
+                 "down_end.png",
+                 "size_one.png"]
+    """
+    0 - empty               +
+    1 - empty around ship   +
+    2 - vertical body       +
+    3 - horizontal body     +
+    4 - empty after shot    +
+    5 - ship after shot     +
+    6 - left end            +
+    7 - right end           +
+    8 - up end              +
+    9 - down end            +
+    10 - ship size 1        +
+    """
 
     SHIPS_SIZES = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
 

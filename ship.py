@@ -1,3 +1,19 @@
+import logging as log
+log.basicConfig(level=log.DEBUG)
+"""
+0 - empty               +
+1 - empty around ship   +
+2 - horizontal body     +
+3 - vertical body       +
+4 - empty after shot    +
+5 - ship after shot     +
+6 - up end              +
+7 - down end            +
+8 - left end            +-
+9 - right end           +-
+10 - ship size 1        +
+"""
+
 class Ship:
     def __init__(self, field, size, x, y, direction):
         self.field = field
@@ -41,6 +57,11 @@ class Ship:
                     self.status[p] = 1
                     self.ceils_around.remove(p)
                     self.field.field_ships[x - i][y + j] = self
+        if size != 1:
+            self.field.field_view[x][y] = 7
+            self.field.field_view[x - size + 1][y] = 6
+        else:
+            self.field.field_view[x][y] = 10
 
     def place_down(self, size, x, y):
         for i in range(-1, size + 1):
@@ -56,6 +77,11 @@ class Ship:
                     self.status[p] = 1
                     self.ceils_around.remove(p)
                     self.field.field_ships[x + i][y + j] = self
+        if size != 1:
+            self.field.field_view[x][y] = 6
+            self.field.field_view[x + size - 1][y] = 7
+        else:
+            self.field.field_view[x][y] = 10
 
     def place_left(self, size, x, y):
         for i in range(-1, 2):
@@ -71,6 +97,11 @@ class Ship:
                     self.status[p] = 1
                     self.ceils_around.remove(p)
                     self.field.field_ships[x + i][y - j] = self
+        if size != 1:
+            self.field.field_view[x][y] = 9
+            self.field.field_view[x][y - size + 1] = 8
+        else:
+            self.field.field_view[x][y] = 10
 
     def place_right(self, size, x, y):
         for i in range(-1, 2):
@@ -86,3 +117,8 @@ class Ship:
                     self.status[p] = 1
                     self.ceils_around.remove(p)
                     self.field.field_ships[x + i][y + j] = self
+        if size != 1:
+            self.field.field_view[x][y] = 8
+            self.field.field_view[x][y + size - 1] = 9
+        else:
+            self.field.field_view[x][y] = 10
