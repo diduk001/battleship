@@ -10,7 +10,7 @@ class Field:
     def __init__(self) -> None:
         self.size = self.width, self.height = Config.FIELD_WIDTH, Config.FIELD_HEIGHT
         self.ceil_size = self.ceil_width, self.ceil_height = Config.CEIL_WIDTH, Config.CEIL_HEIGHT
-        self.screen_size = self.screen_width, self.screen_height = Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT
+        self.screen_size = self.screen_width, self.screen_height = Config.FIELD_PIX_WIDTH, Config.FIELD_PIX_HEIGHT
 
         self.border_weight = Config.BORDER_WEIGHT
         self.border_color = Config.BORDER_COLOR
