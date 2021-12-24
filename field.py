@@ -1,8 +1,7 @@
+import os
 import random
 
 import pygame
-
-import os
 
 from config import Config
 from ship import Ship
@@ -16,8 +15,6 @@ class Field:
 
         self.border_weight = Config.BORDER_WEIGHT
         self.border_color = Config.BORDER_COLOR
-
-        self.ceil_colors = Config.CEIL_COLOR_BY_TYPE
 
         self._initialized = False
         self.field_view = [[0 for j in range(self.height)] for i in range(self.width)]
