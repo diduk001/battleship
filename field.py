@@ -29,8 +29,9 @@ class Field:
         self.ceil_sprites = []
         for filename in Config.CEIL_SPRITES_FILENAMES:
             file_path = os.path.join('.', 'static', 'img', filename)
-            file = pygame.image.load(file_path)
-            self.ceil_sprites.append(file)
+            sprite = pygame.image.load(file_path)
+            sprite = pygame.transform.scale(sprite, self.ceil_size)
+            self.ceil_sprites.append(sprite)
 
         self.build()
 
