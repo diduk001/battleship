@@ -3,6 +3,7 @@ import random
 
 import pygame
 
+import falling_bomb
 from config import Config
 from ship import Ship
 
@@ -55,10 +56,8 @@ class Field:
 
     def shoot(self, field_cords: tuple[int, int]) -> None:
         x, y = field_cords
-        if self.field_ships[x][y] is not Ship:
-            (self.field_ships[x][y]).shot(x, y)
-        else:
-            self.field_view[x][y] = 4
+        falling_bomb.FallingBomb(x,
+                    y, self)
 
     def render(self, screen: pygame.Surface) -> None:
         assert self._initialized
@@ -91,6 +90,10 @@ class Field:
                 left = (x + 1) * self.border_weight + x * self.ceil_width
                 top = (y + 1) * self.border_weight + y * self.ceil_height
                 screen.blit(ceil_sprite, (left, top))
+        for bomb, f in falling_bomb.is_falling:
+            if f == self:
+                bomb.fall()
+                screen.blit(bomb.sprite, (bomb.x, bomb.y))
 
     def build(self):
         for size in self.ships_sizes:

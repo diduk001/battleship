@@ -1,4 +1,3 @@
-import  os.path
 class Config:
     WINDOW_CAPTION = "Battleship"
 
