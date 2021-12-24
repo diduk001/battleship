@@ -17,9 +17,11 @@ class Field:
         self.border_weight = Config.BORDER_WEIGHT
         self.border_color = Config.BORDER_COLOR
 
+        self.ceil_colors = Config.CEIL_COLOR_BY_TYPE
+
         self._initialized = False
         self.field_view = [[0 for j in range(self.height)] for i in range(self.width)]
-        self.field_ships = [[0 for j in range(self.height)] for i in range(self.width)]
+        self.field_ships = [[Ship for j in range(self.height)] for i in range(self.width)]
         self.free_spots = []
         for i in range(10):
             for j in range(10):
@@ -34,6 +36,32 @@ class Field:
             self.ceil_sprites.append(file)
 
         self.build()
+
+    @staticmethod
+    def get_field_cords_by_screen_cords(surface_cords: tuple[int, int]) -> tuple[int, int]:
+        screen_x, screen_y = surface_cords
+
+        field_x = screen_x // (Config.CEIL_WIDTH + Config.BORDER_WEIGHT)
+        if field_x >= Config.FIELD_WIDTH:
+            field_x = Config.FIELD_WIDTH - 1
+
+        field_y = screen_y // (Config.CEIL_HEIGHT + Config.BORDER_WEIGHT)
+        if field_y >= Config.FIELD_HEIGHT:
+            field_y = Config.FIELD_HEIGHT - 1
+
+        return field_x, field_y
+
+    def click(self, cords: tuple[int, int]) -> None:
+        field_cords = self.get_field_cords_by_screen_cords(cords)
+        self.shoot(field_cords)
+
+    def shoot(self, field_cords: tuple[int, int]) -> None:
+        x, y = field_cords
+        if self.field_ships[x][y] is not Ship:
+            (self.field_ships[x][y]).shot(x, y)
+            self.field_view[x][y] = 5
+        else:
+            self.field_view[x][y] = 4
 
     def render(self, screen: pygame.Surface) -> None:
         assert self._initialized
@@ -67,6 +95,10 @@ class Field:
                 top = (y + 1) * self.border_weight + y * self.ceil_height
                 screen.blit(ceil_sprite, (left, top))
 
+    def build(self):
+        for size in self.ships_sizes:
+            self.place(size)
+        self._initialized = True
 
     def check_up(self, size, x, y):
         flag = True
@@ -127,29 +159,3 @@ class Field:
             self.check_left(size, x, y)
         if d == 4:
             self.check_right(size, x, y)
-
-    def build(self):
-        for size in self.ships_sizes:
-            self.place(size)
-        self._initialized = True
-
-    def get_field_cords_by_screen_cords(self, screen_cords: tuple[int, int]) -> tuple[int, int]:
-        screen_x, screen_y = screen_cords
-
-        field_x = screen_x // (self.ceil_width + self.border_weight)
-        if field_x >= self.width:
-            field_x = self.width - 1
-
-        field_y = screen_y // (self.ceil_height + self.border_weight)
-        if field_y >= self.height:
-            field_y = self.height - 1
-
-        return field_x, field_y
-
-    def shoot(self, field_cords: tuple[int, int]) -> None:
-        x, y = field_cords
-        if self.field_ships[x][y] != 0:
-            (self.field_ships[x][y]).shot(x, y)
-            self.field_view[x][y] = 5
-        else:
-            self.field_view[x][y] = 4

@@ -1,6 +1,8 @@
 import  os.path
 class Config:
-    SCREEN_WIDTH = 602
+    WINDOW_CAPTION = "Battleship"
+
+    SCREEN_WIDTH = 1204
     SCREEN_HEIGHT = 602
 
     FIELD_PIX_WIDTH = 602
