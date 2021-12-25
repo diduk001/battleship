@@ -1,5 +1,6 @@
 import os
 import random
+from typing import Union
 
 import pygame
 
@@ -19,7 +20,7 @@ class Field:
 
         self._initialized = False
 
-        self.visible = True
+        self.active = True
         self.types_to_make_invisible = Config.TYPES_TO_MAKE_INVISIBLE
 
         self.field_view = [[0 for j in range(self.height)] for i in range(self.width)]
@@ -54,13 +55,22 @@ class Field:
 
         return field_x, field_y
 
-    def click(self, cords: tuple[int, int]) -> None:
-        field_cords = self.get_field_cords_by_screen_cords(cords)
-        self.shoot(field_cords)
+    def is_ship(self, field_cords: tuple[int, int]) -> bool:
+        assert self._initialized
+        x, y = field_cords
+        return isinstance(self.field_ships[x][y], Ship)
 
-    def shoot(self, field_cords: tuple[int, int]) -> None:
+    def click(self, cords: tuple[int, int]) -> Union[None, bool]:
+        if not self.active:
+            return
+
+        field_cords = self.get_field_cords_by_screen_cords(cords)
+        return self.shoot(field_cords)
+
+    def shoot(self, field_cords: tuple[int, int]) -> bool:
         x, y = field_cords
         falling_bomb.FallingBomb(x, y, self)
+        return self.is_ship(field_cords)
 
     def render(self, screen: pygame.Surface) -> None:
         assert self._initialized
@@ -89,7 +99,7 @@ class Field:
         for x in range(self.width):
             for y in range(self.height):
                 ceil_type = self.field_view[x][y]
-                if not self.visible:
+                if not self.active:
                     if ceil_type in self.types_to_make_invisible:
                         ceil_type = 0
 
@@ -115,17 +125,17 @@ class Field:
             self.place(size)
         self._initialized = True
 
-    def is_visible(self) -> bool:
-        return self.visible
+    def is_active(self) -> bool:
+        return self.active
 
-    def make_invisible(self) -> None:
-        self.visible = False
+    def deactivate(self) -> None:
+        self.active = False
 
-    def make_visible(self) -> None:
-        self.visible = True
+    def activate(self) -> None:
+        self.active = True
 
     def change_visibility(self) -> None:
-        self.visible = not self.visible
+        self.active = not self.active
 
     def check_up(self, ship_size: int, x: int, y: int) -> None:
         flag = True

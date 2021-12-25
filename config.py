@@ -27,7 +27,8 @@ class Config:
     PLAYER_UI_HEIGHT = FIELD_PIX_HEIGHT + 60
     PLAYER_UI_FONT_NAME = 'arial'
     PLAYER_UI_FONT_SIZE = 38
-    PLAYER_BORDER_COLOR = (255, 0, 0)
+    PLAYER_BORDER_COLOR = (0, 0, 255)
+    ACTIVE_PLAYER_BORDER_COLOR = (255, 0, 0)
     """
     0 - empty               +
     1 - empty around ship   +

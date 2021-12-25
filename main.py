@@ -5,6 +5,8 @@ from player import Player
 from ui import UI
 
 
+# TODO: remake visual content of players (visibility of your / enemies ships)
+
 class App:
     def __init__(self):
         self._running = True
@@ -28,14 +30,28 @@ class App:
         x = 0
         for i in range(self.players_cnt):
             y = 0
-            self.ui.add((x, y), self.players[i].size, self.players[i])
+            self.ui.add(f"Player{i + 1}_UI", (x, y), self.players[i].size, self.players[i])
 
             x += self.players[i].width
 
     def on_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
-            self.ui.click(mouse_pos)
+
+            enemies_ui_names = [f"Player{i + 1}_UI" for i in range(self.players_cnt) if i != self.cur_player_idx]
+            for name, gen in self.ui.click(mouse_pos):
+                if name in enemies_ui_names:
+                    # print(name)
+                    to_ship_cur = list(gen)[0][1]
+                    if to_ship_cur is True:
+                        break
+                else:
+                    # Not clicked on field
+                    break
+            else:
+                self.cur_player_idx += 1
+                self.cur_player_idx %= self.players_cnt
+
         if event.type == pygame.QUIT:
             self._running = False
 
@@ -43,6 +59,12 @@ class App:
         pass
 
     def on_render(self):
+        for i in range(self.players_cnt):
+            if i == self.cur_player_idx:
+                self.players[i].make_inactive()
+            else:
+                self.players[i].make_active()
+
         self.ui.render(self._display_surf)
         pygame.display.update()
 
