@@ -29,6 +29,12 @@ class Config:
     PLAYER_UI_FONT_SIZE = 38
     PLAYER_BORDER_COLOR = (0, 0, 255)
     ACTIVE_PLAYER_BORDER_COLOR = (255, 0, 0)
+
+    BOMB_FALLING_SPEED = 20
+    BOMB_SIZE = 500
+
+
+
     """
     0 - empty               +
     1 - empty around ship   +
