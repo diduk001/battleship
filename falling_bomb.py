@@ -1,11 +1,13 @@
 from config import Config
 from ship import Ship
+from burst import Burst
 
 import pygame
 
 import os
 
 is_falling = []
+is_bursting = []
 
 
 class FallingBomb:
@@ -39,6 +41,7 @@ class FallingBomb:
             self.sprite = pygame.transform.scale(self.sprite, (self.size, self.size))
         else:
             is_falling.remove((self, self.field))
+            is_bursting.append(Burst(self.x, self.y, self.field))
             if self.field.field_ships[self.ceil_x][self.ceil_y] is not Ship:
                 (self.field.field_ships[self.ceil_x][self.ceil_y]).shot(self.ceil_x, self.ceil_y)
             else:
