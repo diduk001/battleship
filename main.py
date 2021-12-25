@@ -1,37 +1,57 @@
 import pygame
 
 from config import Config
-from field import Field
+from player import Player
 from ui import UI
 
+
+# TODO: remake visual content of players (visibility of your / enemies ships)
 
 class App:
     def __init__(self):
         self._running = True
-        self._display_surf = None
         self.screen_size = self.screen_width, self.screen_height = Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT
         self.field_size = self.field_width, self.field_height = Config.FIELD_PIX_WIDTH, Config.FIELD_PIX_HEIGHT
 
-        self.ui = UI()
-        self.field = Field()
-        self.field2 = Field()
-        self._field_surface = pygame.Surface(self.field_size)
-        self._field2_surface = pygame.Surface(self.field_size)
-
-    def on_init(self):
         pygame.init()
+        pygame.font.init()
+
         self._display_surf = pygame.display.set_mode(self.screen_size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         pygame.display.set_caption(Config.WINDOW_CAPTION)
         self._running = True
 
-        self.ui.add((0, 0), self.field_size, self.field, self._field_surface)
-        self.ui.add((602, 0), self.field_size, self.field2, self._field2_surface)
-        self.field2.make_invisible()
+        self.ui = UI(self.screen_size)
+
+        # creating players
+        self.players_cnt = Config.PLAYERS_CNT
+        self.cur_player_idx = 0
+        self.players = [Player(name=f"Player {i + 1}") for i in range(self.players_cnt)]
+
+        x = 0
+        for i in range(self.players_cnt):
+            y = 0
+            self.ui.add(f"Player{i + 1}_UI", (x, y), self.players[i].size, self.players[i])
+
+            x += self.players[i].width
 
     def on_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
-            self.ui.click(mouse_pos)
+
+            enemies_ui_names = [f"Player{i + 1}_UI" for i in range(self.players_cnt) if i != self.cur_player_idx]
+            for name, gen in self.ui.click(mouse_pos):
+                if name in enemies_ui_names:
+                    # print(name)
+                    to_ship_cur = list(gen)[0][1]
+                    if to_ship_cur is True:
+                        break
+                else:
+                    # Not clicked on field
+                    break
+            else:
+                self.cur_player_idx += 1
+                self.cur_player_idx %= self.players_cnt
+
         if event.type == pygame.QUIT:
             self._running = False
 
@@ -39,6 +59,12 @@ class App:
         pass
 
     def on_render(self):
+        for i in range(self.players_cnt):
+            if i == self.cur_player_idx:
+                self.players[i].make_inactive()
+            else:
+                self.players[i].make_active()
+
         self.ui.render(self._display_surf)
         pygame.display.update()
 
@@ -47,9 +73,6 @@ class App:
         pygame.quit()
 
     def on_execute(self):
-        if self.on_init() is False:
-            self._running = False
-
         while self._running:
             for event in pygame.event.get():
                 self.on_event(event)

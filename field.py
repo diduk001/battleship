@@ -1,5 +1,6 @@
 import os
 import random
+from typing import Union
 
 import pygame
 
@@ -12,14 +13,14 @@ class Field:
     def __init__(self) -> None:
         self.size = self.width, self.height = Config.FIELD_WIDTH, Config.FIELD_HEIGHT
         self.ceil_size = self.ceil_width, self.ceil_height = Config.CEIL_WIDTH, Config.CEIL_HEIGHT
-        self.screen_size = self.screen_width, self.screen_height = Config.FIELD_PIX_WIDTH, Config.FIELD_PIX_HEIGHT
+        self.pix_size = self.pix_width, self.pix_height = Config.FIELD_PIX_WIDTH, Config.FIELD_PIX_HEIGHT
 
-        self.border_weight = Config.BORDER_WEIGHT
-        self.border_color = Config.BORDER_COLOR
+        self.border_weight = Config.CEIL_BORDER_WEIGHT
+        self.border_color = Config.CEIL_BORDER_COLOR
 
         self._initialized = False
 
-        self.visible = True
+        self.active = True
         self.types_to_make_invisible = Config.TYPES_TO_MAKE_INVISIBLE
 
         self.field_view = [[0 for j in range(self.height)] for i in range(self.width)]
@@ -44,24 +45,32 @@ class Field:
     def get_field_cords_by_screen_cords(surface_cords: tuple[int, int]) -> tuple[int, int]:
         screen_x, screen_y = surface_cords
 
-        field_x = screen_x // (Config.CEIL_WIDTH + Config.BORDER_WEIGHT)
+        field_x = screen_x // (Config.CEIL_WIDTH + Config.CEIL_BORDER_WEIGHT)
         if field_x >= Config.FIELD_WIDTH:
             field_x = Config.FIELD_WIDTH - 1
 
-        field_y = screen_y // (Config.CEIL_HEIGHT + Config.BORDER_WEIGHT)
+        field_y = screen_y // (Config.CEIL_HEIGHT + Config.CEIL_BORDER_WEIGHT)
         if field_y >= Config.FIELD_HEIGHT:
             field_y = Config.FIELD_HEIGHT - 1
 
         return field_x, field_y
 
-    def click(self, cords: tuple[int, int]) -> None:
-        field_cords = self.get_field_cords_by_screen_cords(cords)
-        self.shoot(field_cords)
-
-    def shoot(self, field_cords: tuple[int, int]) -> None:
+    def is_ship(self, field_cords: tuple[int, int]) -> bool:
+        assert self._initialized
         x, y = field_cords
-        falling_bomb.FallingBomb(x,
-                    y, self)
+        return isinstance(self.field_ships[x][y], Ship)
+
+    def click(self, cords: tuple[int, int]) -> Union[None, bool]:
+        if not self.active:
+            return
+
+        field_cords = self.get_field_cords_by_screen_cords(cords)
+        return self.shoot(field_cords)
+
+    def shoot(self, field_cords: tuple[int, int]) -> bool:
+        x, y = field_cords
+        falling_bomb.FallingBomb(x, y, self)
+        return self.is_ship(field_cords)
 
     def render(self, screen: pygame.Surface) -> None:
         assert self._initialized
@@ -70,27 +79,27 @@ class Field:
         for col in range(self.width + 1):
             col_x = (self.border_weight + self.ceil_width) * col
             start_pos = (col_x, 0)
-            end_pos = (col_x, self.screen_height)
+            end_pos = (col_x, self.pix_height)
             pygame.draw.line(screen, self.border_color, start_pos, end_pos, width=self.border_weight)
         # draw last border
-        x_last_start_pos = (self.screen_width - self.border_weight, 0)
-        x_last_end_pos = (self.screen_width - self.border_weight, self.screen_height)
+        x_last_start_pos = (self.pix_width - self.border_weight, 0)
+        x_last_end_pos = (self.pix_width - self.border_weight, self.pix_height)
         pygame.draw.line(screen, self.border_color, x_last_start_pos, x_last_end_pos, width=self.border_weight)
 
         for row in range(self.height + 1):
             row_y = (self.border_weight + self.ceil_height) * row
             start_pos = (0, row_y)
-            end_pos = (self.screen_width, row_y)
+            end_pos = (self.pix_width, row_y)
             pygame.draw.line(screen, self.border_color, start_pos, end_pos, width=self.border_weight)
 
-        y_last_start_pos = (0, self.screen_height - self.border_weight)
-        y_last_end_pos = (self.screen_width, self.screen_height - self.border_weight)
+        y_last_start_pos = (0, self.pix_height - self.border_weight)
+        y_last_end_pos = (self.pix_width, self.pix_height - self.border_weight)
         pygame.draw.line(screen, self.border_color, y_last_start_pos, y_last_end_pos, width=self.border_weight)
 
         for x in range(self.width):
             for y in range(self.height):
                 ceil_type = self.field_view[x][y]
-                if not self.visible:
+                if not self.active:
                     if ceil_type in self.types_to_make_invisible:
                         ceil_type = 0
 
@@ -116,17 +125,17 @@ class Field:
             self.place(size)
         self._initialized = True
 
-    def is_visible(self) -> bool:
-        return self.visible
+    def is_active(self) -> bool:
+        return self.active
 
-    def make_invisible(self) -> None:
-        self.visible = False
+    def deactivate(self) -> None:
+        self.active = False
 
-    def make_visible(self) -> None:
-        self.visible = True
+    def activate(self) -> None:
+        self.active = True
 
     def change_visibility(self) -> None:
-        self.visible = not self.visible
+        self.active = not self.active
 
     def check_up(self, ship_size: int, x: int, y: int) -> None:
         flag = True

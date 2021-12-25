@@ -9,7 +9,7 @@
 7 - down end            +
 8 - left end            +-
 9 - right end           +-
-10 - ship ship size 1        +
+10 - ship size 1        +
 """
 
 
@@ -66,7 +66,7 @@ class Ship:
     def place_down(self, size: int, x: int, y: int) -> None:
         for i in range(-1, size + 1):
             for j in range(-1, 2):
-                p = (x + i, y + j)
+                p = x + i, y + j
                 if 0 <= x + i < 10 and 0 <= y + j < 10:
                     self.ceils_around.append(p)
                     self.field.field_view[x + i][y + j] = 1
@@ -106,7 +106,7 @@ class Ship:
     def place_right(self, size: int, x: int, y: int) -> None:
         for i in range(-1, 2):
             for j in range(-1, size + 1):
-                p = (x + i, y + j)
+                p = x + i, y + j
                 if 0 <= x + i < 10 and 0 <= y + j < 10:
                     self.ceils_around.append(p)
                     self.field.field_view[x + i][y + j] = 1
