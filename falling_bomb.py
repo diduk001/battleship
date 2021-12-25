@@ -1,10 +1,10 @@
-from config import Config
-from ship import Ship
-from burst import Burst
+import os
 
 import pygame
 
-import os
+from burst import Burst
+from config import Config
+from ship import Ship
 
 is_falling = []
 is_bursting = []
@@ -20,6 +20,7 @@ class FallingBomb:
         self.ceil_y = y
         self.x = 0
         self.y = 0
+        # TODO: move falling speed and size into Config
         self.falling_speed = 20
         self.size = 500
         self.moving_speed_x = abs(self.finish_x - self.x) / ((self.size - Config.CEIL_HEIGHT) / self.falling_speed)
@@ -30,7 +31,6 @@ class FallingBomb:
         self.fall()
 
     def fall(self):
-        # log.info("bomb is falling")
         global is_falling
         self.x += self.moving_speed_x * (self.x < self.finish_x)
         self.x -= self.moving_speed_x * (self.x > self.finish_x)
