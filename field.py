@@ -12,11 +12,11 @@ from ship import Ship
 class Field:
     def __init__(self) -> None:
         self.size = self.width, self.height = Config.FIELD_WIDTH, Config.FIELD_HEIGHT
-        self.ceil_size = self.ceil_width, self.ceil_height = Config.CEIL_WIDTH, Config.CEIL_HEIGHT
+        self.cell_size = self.cell_width, self.cell_height = Config.CELL_WIDTH, Config.CELL_HEIGHT
         self.pix_size = self.pix_width, self.pix_height = Config.FIELD_PIX_WIDTH, Config.FIELD_PIX_HEIGHT
 
-        self.border_weight = Config.CEIL_BORDER_WEIGHT
-        self.border_color = Config.CEIL_BORDER_COLOR
+        self.border_weight = Config.CELL_BORDER_WEIGHT
+        self.border_color = Config.CELL_BORDER_COLOR
 
         self._initialized = False
 
@@ -26,18 +26,19 @@ class Field:
         self.field_view = [[0 for j in range(self.height)] for i in range(self.width)]
         self.field_ships = [[Ship for j in range(self.height)] for i in range(self.width)]
         self.free_spots = []
+        self.busy_cells = []
         for i in range(10):
             for j in range(10):
                 self.free_spots.append((i, j))
 
         self.ships_sizes = Config.SHIPS_SIZES
 
-        self.ceil_sprites = []
-        for filename in Config.CEIL_SPRITES_FILENAMES:
+        self.cell_sprites = []
+        for filename in Config.CELL_SPRITES_FILENAMES:
             file_path = os.path.join('.', 'static', 'img', filename)
             sprite = pygame.image.load(file_path)
-            sprite = pygame.transform.scale(sprite, self.ceil_size)
-            self.ceil_sprites.append(sprite)
+            sprite = pygame.transform.scale(sprite, self.cell_size)
+            self.cell_sprites.append(sprite)
 
         self.build()
 
@@ -45,11 +46,11 @@ class Field:
     def get_field_cords_by_screen_cords(surface_cords: tuple[int, int]) -> tuple[int, int]:
         screen_x, screen_y = surface_cords
 
-        field_x = screen_x // (Config.CEIL_WIDTH + Config.CEIL_BORDER_WEIGHT)
+        field_x = screen_x // (Config.CELL_WIDTH + Config.CELL_BORDER_WEIGHT)
         if field_x >= Config.FIELD_WIDTH:
             field_x = Config.FIELD_WIDTH - 1
 
-        field_y = screen_y // (Config.CEIL_HEIGHT + Config.CEIL_BORDER_WEIGHT)
+        field_y = screen_y // (Config.CELL_HEIGHT + Config.CELL_BORDER_WEIGHT)
         if field_y >= Config.FIELD_HEIGHT:
             field_y = Config.FIELD_HEIGHT - 1
 
@@ -69,15 +70,18 @@ class Field:
 
     def shoot(self, field_cords: tuple[int, int]) -> bool:
         x, y = field_cords
-        falling_bomb.FallingBomb(x, y, self)
-        return self.is_ship(field_cords)
+        if field_cords not in self.busy_cells:
+            falling_bomb.FallingBomb(x, y, self)
+            return self.is_ship(field_cords)
+        return True
+
 
     def render(self, screen: pygame.Surface) -> None:
         assert self._initialized
 
         # draw grid from borders
         for col in range(self.width + 1):
-            col_x = (self.border_weight + self.ceil_width) * col
+            col_x = (self.border_weight + self.cell_width) * col
             start_pos = (col_x, 0)
             end_pos = (col_x, self.pix_height)
             pygame.draw.line(screen, self.border_color, start_pos, end_pos, width=self.border_weight)
@@ -87,7 +91,7 @@ class Field:
         pygame.draw.line(screen, self.border_color, x_last_start_pos, x_last_end_pos, width=self.border_weight)
 
         for row in range(self.height + 1):
-            row_y = (self.border_weight + self.ceil_height) * row
+            row_y = (self.border_weight + self.cell_height) * row
             start_pos = (0, row_y)
             end_pos = (self.pix_width, row_y)
             pygame.draw.line(screen, self.border_color, start_pos, end_pos, width=self.border_weight)
@@ -98,15 +102,15 @@ class Field:
 
         for x in range(self.width):
             for y in range(self.height):
-                ceil_type = self.field_view[x][y]
+                cell_type = self.field_view[x][y]
                 if not self.active:
-                    if ceil_type in self.types_to_make_invisible:
-                        ceil_type = 0
+                    if cell_type in self.types_to_make_invisible:
+                        cell_type = 0
 
-                ceil_sprite = self.ceil_sprites[ceil_type]
-                left = (x + 1) * self.border_weight + x * self.ceil_width
-                top = (y + 1) * self.border_weight + y * self.ceil_height
-                screen.blit(ceil_sprite, (left, top))
+                cell_sprite = self.cell_sprites[cell_type]
+                left = (x + 1) * self.border_weight + x * self.cell_width
+                top = (y + 1) * self.border_weight + y * self.cell_height
+                screen.blit(cell_sprite, (left, top))
         for bomb, f in falling_bomb.is_falling:
             if f == self:
                 bomb.fall()

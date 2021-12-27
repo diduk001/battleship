@@ -21,7 +21,7 @@ class Ship:
         self.direction = direction
         self.status = {}
         self.hp = size
-        self.ceils_around = []
+        self.cells_around = []
         if direction == 1:
             self.place_up(size, x, y)
         if direction == 2:
@@ -40,22 +40,24 @@ class Ship:
             self.drowned()
 
     def drowned(self) -> None:
-        for x, y in self.ceils_around:
+        for x, y in self.cells_around:
             self.field.field_view[x][y] = 4
+        for cell in self.cells_around:
+            self.field.busy_cells.append(cell)
 
     def place_up(self, size: int, x: int, y: int) -> None:
         for i in range(-1, size + 1):
             for j in range(-1, 2):
                 p = (x - i, y + j)
                 if 0 <= x - i < 10 and 0 <= y + j < 10:
-                    self.ceils_around.append(p)
+                    self.cells_around.append(p)
                     self.field.field_view[x - i][y + j] = 1
                     if p in self.field.free_spots:
                         self.field.free_spots.remove(p)
                 if j == 0 and 0 <= i < size:
                     self.field.field_view[x - i][y + j] = 3
                     self.status[p] = 1
-                    self.ceils_around.remove(p)
+                    self.cells_around.remove(p)
                     self.field.field_ships[x - i][y + j] = self
         if size != 1:
             self.field.field_view[x][y] = 7
@@ -68,14 +70,14 @@ class Ship:
             for j in range(-1, 2):
                 p = x + i, y + j
                 if 0 <= x + i < 10 and 0 <= y + j < 10:
-                    self.ceils_around.append(p)
+                    self.cells_around.append(p)
                     self.field.field_view[x + i][y + j] = 1
                     if p in self.field.free_spots:
                         self.field.free_spots.remove(p)
                 if j == 0 and 0 <= i < size:
                     self.field.field_view[x + i][y + j] = 3
                     self.status[p] = 1
-                    self.ceils_around.remove(p)
+                    self.cells_around.remove(p)
                     self.field.field_ships[x + i][y + j] = self
         if size != 1:
             self.field.field_view[x][y] = 6
@@ -88,14 +90,14 @@ class Ship:
             for j in range(-1, size + 1):
                 p = (x + i, y - j)
                 if 0 <= x + i < 10 and 0 <= y - j < 10:
-                    self.ceils_around.append(p)
+                    self.cells_around.append(p)
                     self.field.field_view[x + i][y - j] = 1
                     if p in self.field.free_spots:
                         self.field.free_spots.remove(p)
                 if i == 0 and 0 <= j < size:
                     self.field.field_view[x + i][y - j] = 2
                     self.status[p] = 1
-                    self.ceils_around.remove(p)
+                    self.cells_around.remove(p)
                     self.field.field_ships[x + i][y - j] = self
         if size != 1:
             self.field.field_view[x][y] = 9
@@ -108,14 +110,14 @@ class Ship:
             for j in range(-1, size + 1):
                 p = x + i, y + j
                 if 0 <= x + i < 10 and 0 <= y + j < 10:
-                    self.ceils_around.append(p)
+                    self.cells_around.append(p)
                     self.field.field_view[x + i][y + j] = 1
                     if p in self.field.free_spots:
                         self.field.free_spots.remove(p)
                 if i == 0 and 0 <= j < size:
                     self.field.field_view[x + i][y + j] = 2
                     self.status[p] = 1
-                    self.ceils_around.remove(p)
+                    self.cells_around.remove(p)
                     self.field.field_ships[x + i][y + j] = self
         if size != 1:
             self.field.field_view[x][y] = 8
