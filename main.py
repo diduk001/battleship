@@ -41,9 +41,11 @@ class App:
             enemies_ui_names = [f"Player{i + 1}_UI" for i in range(self.players_cnt) if i != self.cur_player_idx]
             for name, gen in self.ui.click(mouse_pos):
                 if name in enemies_ui_names:
-                    # print(name)
                     to_ship_cur = list(gen)[0][1]
                     if to_ship_cur is True:
+                        self.players[self.cur_player_idx].score += 1
+                        if self.players[self.cur_player_idx].score == Config.WIN_SCORE:
+                            exit()
                         break
                 else:
                     # Not clicked on field
