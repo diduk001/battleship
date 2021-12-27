@@ -10,17 +10,17 @@ class Config:
     FIELD_WIDTH = 10
     FIELD_HEIGHT = 10
 
-    CEIL_BORDER_WEIGHT = 2
-    CEIL_BORDER_COLOR = (0, 0, 0)
+    CELL_BORDER_WEIGHT = 2
+    CELL_BORDER_COLOR = (0, 0, 0)
 
     # checks if we can fit field into width, height
-    assert (FIELD_PIX_WIDTH - ((FIELD_WIDTH + 1) * CEIL_BORDER_WEIGHT)) % FIELD_WIDTH == 0, "Width is not properly " \
+    assert (FIELD_PIX_WIDTH - ((FIELD_WIDTH + 1) * CELL_BORDER_WEIGHT)) % FIELD_WIDTH == 0, "Width is not properly " \
                                                                                             "divisible"
-    CEIL_WIDTH = (FIELD_PIX_WIDTH - ((FIELD_WIDTH + 1) * CEIL_BORDER_WEIGHT)) // FIELD_WIDTH
+    CELL_WIDTH = (FIELD_PIX_WIDTH - ((FIELD_WIDTH + 1) * CELL_BORDER_WEIGHT)) // FIELD_WIDTH
 
     assert (FIELD_PIX_HEIGHT - (
-            (FIELD_HEIGHT + 1) * CEIL_BORDER_WEIGHT)) % FIELD_HEIGHT == 0, "Height is not properly divisible"
-    CEIL_HEIGHT = (FIELD_PIX_HEIGHT - ((FIELD_HEIGHT + 1) * CEIL_BORDER_WEIGHT)) // FIELD_HEIGHT
+            (FIELD_HEIGHT + 1) * CELL_BORDER_WEIGHT)) % FIELD_HEIGHT == 0, "Height is not properly divisible"
+    CELL_HEIGHT = (FIELD_PIX_HEIGHT - ((FIELD_HEIGHT + 1) * CELL_BORDER_WEIGHT)) // FIELD_HEIGHT
 
     PLAYERS_CNT = 2
     PLAYER_UI_WIDTH = FIELD_PIX_WIDTH
@@ -49,7 +49,7 @@ class Config:
     10 - ship ship size 1        +
     """
 
-    CEIL_SPRITES_FILENAMES = ("empty.png",
+    CELL_SPRITES_FILENAMES = ("empty.png",
                               "empty.png",
                               "body_v.png",
                               "body_h.png",
