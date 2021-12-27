@@ -20,7 +20,8 @@ class Field:
 
         self._initialized = False
 
-        self.active = True
+        self.clickable = False
+        self.enemy = False
         self.types_to_make_invisible = Config.TYPES_TO_MAKE_INVISIBLE
 
         self.field_view = [[0 for j in range(self.height)] for i in range(self.width)]
@@ -62,7 +63,7 @@ class Field:
         return isinstance(self.field_ships[x][y], Ship)
 
     def click(self, cords: tuple[int, int]) -> Union[None, bool]:
-        if not self.active:
+        if not self.clickable:
             return
 
         field_cords = self.get_field_cords_by_screen_cords(cords)
@@ -74,7 +75,6 @@ class Field:
             falling_bomb.FallingBomb(x, y, self)
             return self.is_ship(field_cords)
         return True
-
 
     def render(self, screen: pygame.Surface) -> None:
         assert self._initialized
@@ -103,9 +103,8 @@ class Field:
         for x in range(self.width):
             for y in range(self.height):
                 cell_type = self.field_view[x][y]
-                if not self.active:
-                    if cell_type in self.types_to_make_invisible:
-                        cell_type = 0
+                if self.enemy and cell_type in self.types_to_make_invisible:
+                    cell_type = 0
 
                 cell_sprite = self.cell_sprites[cell_type]
                 left = (x + 1) * self.border_weight + x * self.cell_width
@@ -121,17 +120,23 @@ class Field:
             self.place(size)
         self._initialized = True
 
-    def is_active(self) -> bool:
-        return self.active
+    def activate_enemy(self) -> None:
+        self.enemy = True
 
-    def deactivate(self) -> None:
-        self.active = False
+    def deactivate_enemy(self) -> None:
+        self.enemy = False
 
-    def activate(self) -> None:
-        self.active = True
+    def is_enemy(self) -> bool:
+        return self.enemy
 
-    def change_visibility(self) -> None:
-        self.active = not self.active
+    def activate_clickable(self) -> None:
+        self.clickable = True
+
+    def deactivate_clickable(self) -> None:
+        self.clickable = False
+
+    def is_clickable(self) -> bool:
+        return self.clickable
 
     def check_up(self, ship_size: int, x: int, y: int) -> None:
         flag = True

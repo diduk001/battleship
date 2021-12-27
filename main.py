@@ -61,9 +61,11 @@ class App:
     def on_render(self):
         for i in range(self.players_cnt):
             if i == self.cur_player_idx:
-                self.players[i].make_inactive()
+                self.players[i].deactivate_enemy()
+                self.players[i].deactivate_clickable()
             else:
-                self.players[i].make_active()
+                self.players[i].activate_enemy()
+                self.players[i].activate_clickable()
 
         self.ui.render(self._display_surf)
         pygame.display.update()
