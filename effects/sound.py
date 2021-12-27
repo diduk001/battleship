@@ -1,25 +1,26 @@
 from os import path
-import pygame as pg
 from pygame import mixer
-
+from config.config import Config
 
 class Sound:
-    pg.init()
-    sound1 = mixer.Sound(path.join(path.curdir, 'static/music/boom.mp3'))
-    music = mixer.music.load(path.join(path.curdir, 'static/music/beethoven.ogg'))
+    sound_boom = mixer.Sound(path.join(path.curdir, 'static', 'music', Config.SOUND_BOOM_FILENAME))
+    mixer.music.load(path.join(path.curdir, 'static', 'music', Config.SOUNDTRACK_FILENAME))
 
-    def play_music(self):
+    @staticmethod
+    def play_music():
         mixer.music.play()
     
-    def stop_music(self):
+    @staticmethod
+    def stop_music():
         mixer.music.stop()
 
-    def pause_music(self, b):
+    @staticmethod
+    def pause_music(b):
         if b:
             mixer.music.pause()
         else:
             mixer.music.unpause()
 
     def boom(self):
-        self.sound1.play()
+        self.sound_boom.play()
     

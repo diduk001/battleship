@@ -3,10 +3,10 @@ import random
 from typing import Union
 
 import pygame
-from effects import sound
 
-from effects import graphics
 from config.config import Config
+from effects import graphics
+from effects import sound
 from .ship import Ship
 
 
@@ -17,7 +17,7 @@ class Field:
         self.size = self.width, self.height = Config.FIELD_WIDTH, Config.FIELD_HEIGHT
         self.cell_size = self.cell_width, self.cell_height = Config.CELL_WIDTH, Config.CELL_HEIGHT
         self.pix_size = self.pix_width, self.pix_height = Config.FIELD_PIX_WIDTH, Config.FIELD_PIX_HEIGHT
-        
+
         self.border_weight = Config.CELL_BORDER_WEIGHT
         self.border_color = Config.CELL_BORDER_COLOR
 

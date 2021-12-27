@@ -1,8 +1,8 @@
 import pygame
 
 from config.config import Config
-from .field import Field
 from effects.ui import UI, Text
+from .field import Field
 
 
 class Player(UI):

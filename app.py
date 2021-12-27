@@ -1,21 +1,16 @@
 import pygame
 
 from config.config import Config
-from models.player import Player
-from models.field import Field
-from effects.ui import UI
 from effects.sound import Sound
+from effects.ui import UI
+from models.player import Player
 
-# TODO: remake visual content of players (visibility of your / enemies ships)
 
 class App:
     def __init__(self):
         self._running = True
         self.screen_size = self.screen_width, self.screen_height = Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT
         self.field_size = self.field_width, self.field_height = Config.FIELD_PIX_WIDTH, Config.FIELD_PIX_HEIGHT
-
-        pygame.init()
-        pygame.font.init()
 
         self.sound = Sound()
         self.sound.play_music()

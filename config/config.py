@@ -33,8 +33,6 @@ class Config:
     BOMB_FALLING_SPEED = 20
     BOMB_SIZE = 500
 
-
-
     """
     0 - empty               +
     1 - empty around ship   +
@@ -64,3 +62,6 @@ class Config:
     TYPES_TO_MAKE_INVISIBLE = (2, 3, 6, 7, 8, 9, 10)
 
     SHIPS_SIZES = (4, 3, 3, 2, 2, 2, 1, 1, 1, 1)
+
+    SOUND_BOOM_FILENAME = "boom.mp3"
+    SOUNDTRACK_FILENAME = "beethoven.ogg"
