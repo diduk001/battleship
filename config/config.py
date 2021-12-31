@@ -66,3 +66,8 @@ class Config:
 
     SOUND_BOOM_FILENAME = "boom.mp3"
     SOUNDTRACK_FILENAME = "beethoven.ogg"
+
+    SHOOT_MISSED_STATE = 0
+    SHOOT_SHOT_STATE = 1
+    SHOOT_ALREADY_OPENED_STATE = 2
+

@@ -56,11 +56,13 @@ class App:
                         break
 
                     # shot in ship
-                    if to_ship_cur is True:
+                    if to_ship_cur is 1:
                         self.players[self.cur_player_idx].score += 1
 
                         if self.players[self.cur_player_idx].score == Config.WIN_SCORE:
                             self._running = False
+                        break
+                    elif to_ship_cur is 2:
                         break
                 else:
                     # Clicked not on field

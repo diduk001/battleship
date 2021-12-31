@@ -62,25 +62,28 @@ class Field:
 
         return field_x, field_y
 
-    def is_ship(self, field_cords: tuple[int, int]) -> bool:
+    def is_ship(self, field_cords: tuple[int, int]) -> int:
         assert self._initialized
         x, y = field_cords
-        return isinstance(self.field_ships[x][y], Ship)
+        if isinstance(self.field_ships[x][y], Ship):
+            return Config.SHOOT_SHOT_STATE
+        else:
+            return Config.SHOOT_MISSED_STATE
 
-    def click(self, cords: tuple[int, int]) -> Union[None, bool]:
+    def click(self, cords: tuple[int, int]) -> Union[None, int]:
         if not self.clickable:
             return
 
         field_cords = self.get_field_cords_by_screen_cords(cords)
         return self.shoot(field_cords)
 
-    def shoot(self, field_cords: tuple[int, int]) -> bool:
+    def shoot(self, field_cords: tuple[int, int]) -> int:
         x, y = field_cords
         if field_cords not in self.busy_cells:
             graphics.FallingBomb(x, y, self)
             self.sound.boom()
             return self.is_ship(field_cords)
-        return True
+        return Config.SHOOT_ALREADY_OPENED_STATE
 
     def render(self, screen: pygame.Surface) -> None:
         assert self._initialized
