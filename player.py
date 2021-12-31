@@ -34,6 +34,7 @@ class Player(UI):
         self.field.deactivate()
 
     def render(self, screen: pygame.Surface) -> None:
+        self.score = Config.WIN_SCORE - self.field.ship_cells_left
         self.score_text = Text(f"Score: {self.score}",
                                pygame.font.SysFont(self.font_name, self.font_size), color=(255, 255, 255))
         self.ships_left_text = Text(f"Ships left {self.field.ships_left}",
@@ -52,3 +53,5 @@ class Player(UI):
 
         bounding_rect = pygame.Rect((0, 0), self.size)
         pygame.draw.rect(screen, color, bounding_rect, width=1)
+        if self.score == Config.WIN_SCORE:
+            exit()

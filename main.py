@@ -43,9 +43,6 @@ class App:
                 if name in enemies_ui_names:
                     to_ship_cur = list(gen)[0][1]
                     if to_ship_cur is True:
-                        self.players[self.cur_player_idx].score += 1
-                        if self.players[self.cur_player_idx].score == Config.WIN_SCORE:
-                            exit()
                         break
                 else:
                     # Not clicked on field

@@ -35,6 +35,7 @@ class Ship:
         if self.status[(x, y)]:
             self.status[(x, y)] = 0
             self.hp -= 1
+            self.field.ship_cells_left -= 1
             self.field.field_view[x][y] = 5
         if self.hp == 0:
             self.drowned()
