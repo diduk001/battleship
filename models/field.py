@@ -31,6 +31,8 @@ class Field:
         self.field_ships = [[Ship for j in range(self.height)] for i in range(self.width)]
         self.free_spots = []
         self.busy_cells = []
+        self.ships_left = 10
+        self.ship_cells_left = Config.WIN_SCORE
         for i in range(10):
             for j in range(10):
                 self.free_spots.append((i, j))
