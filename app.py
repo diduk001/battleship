@@ -52,7 +52,7 @@ class App:
                     try:
                         to_ship_cur = rets_list[0][1]
                     except IndexError:
-                        # shit happens
+                        # exceptions happen
                         break
 
                     # shot in ship
