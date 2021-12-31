@@ -21,6 +21,8 @@ class App:
 
         self.ui = UI(self.screen_size)
 
+        self.passing_turn = False
+
         # creating players
         self.players_cnt = Config.PLAYERS_CNT
         self.cur_player_idx = 0
@@ -37,6 +39,10 @@ class App:
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
 
+            if self.passing_turn:
+                self.passing_turn = False
+                return
+
             enemies_ui_names = [f"Player{i + 1}_UI" for i in range(self.players_cnt) if i != self.cur_player_idx]
             for name, gen in self.ui.click(mouse_pos):
                 if name in enemies_ui_names:
@@ -48,6 +54,7 @@ class App:
                     # Not clicked on field
                     break
             else:
+                self.passing_turn = True
                 self.cur_player_idx += 1
                 self.cur_player_idx %= self.players_cnt
 
@@ -59,7 +66,7 @@ class App:
 
     def on_render(self):
         for i in range(self.players_cnt):
-            if i == self.cur_player_idx:
+            if not self.passing_turn and i == self.cur_player_idx:
                 self.players[i].deactivate_enemy()
                 self.players[i].deactivate_clickable()
             else:
