@@ -25,7 +25,7 @@ class Config:
     PLAYERS_CNT = 2
     PLAYER_UI_WIDTH = FIELD_PIX_WIDTH
     PLAYER_UI_HEIGHT = FIELD_PIX_HEIGHT + 60
-    PLAYER_UI_FONT_NAME = 'arial'
+    PLAYER_UI_FONT_NAME = 'Roboto-Medium.ttf'  # Roboto Font from https://fonts.google.com/share?selection.family=Roboto
     PLAYER_UI_FONT_SIZE = 38
     PLAYER_BORDER_COLOR = (0, 0, 255)
     ACTIVE_PLAYER_BORDER_COLOR = (255, 0, 0)

@@ -1,3 +1,5 @@
+import os.path
+
 import pygame
 
 from config.config import Config
@@ -14,12 +16,13 @@ class Player(UI):
         self.field = Field()
 
         self.font_name = Config.PLAYER_UI_FONT_NAME
+        self.font_path = os.path.join("static", "fonts", self.font_name)
         self.font_size = Config.PLAYER_UI_FONT_SIZE
 
         self.score_text = Text(f"Score: {self.score}",
-                               pygame.font.SysFont(self.font_name, self.font_size), color=(255, 255, 255))
+                               pygame.font.Font(self.font_path, self.font_size), color=(255, 255, 255))
         self.ships_left_text = Text(f"Ships left {self.field.ships_left}",
-                                    pygame.font.SysFont(self.font_name, self.font_size), color=(255, 255, 255))
+                                    pygame.font.Font(self.font_path, self.font_size), color=(255, 255, 255))
 
         self.active_color = Config.ACTIVE_PLAYER_BORDER_COLOR
         self.color = Config.PLAYER_BORDER_COLOR
@@ -27,7 +30,7 @@ class Player(UI):
         super().__init__(self.size)
         super().add("PlayerField", (0, 60), self.field.pix_size, self.field)
 
-        self.text = Text(self.name, pygame.font.SysFont(self.font_name, self.font_size), color=(255, 255, 255))
+        self.text = Text(self.name, pygame.font.Font(self.font_path, self.font_size), color=(255, 255, 255))
         super().add("PlayerCaption", (10, 10), self.text.size, self.text)
 
     def activate_enemy(self) -> None:
